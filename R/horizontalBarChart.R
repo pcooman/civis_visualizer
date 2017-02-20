@@ -9,8 +9,8 @@ horizontalBarChart <- function(data,
                                xColumn =  NULL,
                                yColumn = NULL,
                                
-                               chartHeight = 300,
-                               chartWidth = 300,
+                               chartHeight = 560,
+                               chartWidth = 900,
                                
                                marginLeft = 60,
                                marginRight = 35,
@@ -25,31 +25,35 @@ horizontalBarChart <- function(data,
                                fillColorPos = "#0194D3",
                                fillColorNeg = "#F4A800",
                                fillColorFn = NULL,
+                               fillDivergingColor = NULL,
                                
                                tooltipFontFamily = "Lato",
-                               tooltipFontSize = "13px",
+                               tooltipFontSize = "20px",
                                tooltipFontColor = "white",
                                tooltipFontWeight = "bold", 
                                
                                xLabelText = "Value",
                                xLabelFontFamily = "Lato",
-                               xLabelFontSize = "11px",
+                               xLabelFontSize = "16px",
                                xLabelFontColor = "black",
                                xLabelFontWeight = "bold",
                                
                                xTickLabelPosition = "bottom",
                                xTickLabelFontFamily = "Lato",
-                               xTickLabelFontSize = "11px",
+                               xTickLabelFontSize = "16px",
                                xTickLabelFontColor = "black",
                                xTickLabelFontWeight = "normal",
+                               xTickLabelFormat = ".1f",
                                xTickCount = 5,
                                xCustomMaxValue = NULL,
                                xCustomMinValue = NULL,
                                
                                yTickLabelFontFamily = "Lato",
-                               yTickLabelFontSize = "11px",
+                               yTickLabelFontSize = "16px",
                                yTickLabelFontColor = "black",
                                yTickLabelFontWeight = "normal",
+                               
+                               scheme = NULL,
 
                                width = NULL, height = NULL, elementId = NULL) {
 
@@ -73,6 +77,7 @@ horizontalBarChart <- function(data,
     fillColorPos = fillColorPos,
     fillColorNeg = fillColorNeg,
     fillColorFn = fillColorFn,
+    fillDivergingColor = fillDivergingColor,
     
     tooltipFontFamily = tooltipFontFamily,
     tooltipFontSize = tooltipFontSize,
@@ -90,6 +95,7 @@ horizontalBarChart <- function(data,
     xTickLabelFontSize = xTickLabelFontSize,
     xTickLabelFontColor = xTickLabelFontColor,
     xTickLabelFontWeight = xTickLabelFontWeight,
+    xTickLabelFormat = xTickLabelFormat,
     xTickCount = xTickCount,
     xCustomMaxValue = xCustomMaxValue,
     xCustomMinValue = xCustomMinValue,
@@ -97,7 +103,9 @@ horizontalBarChart <- function(data,
     yTickLabelFontFamily = yTickLabelFontFamily,
     yTickLabelFontSize = yTickLabelFontSize,
     yTickLabelFontColor = yTickLabelFontColor,
-    yTickLabelFontWeight = yTickLabelFontWeight
+    yTickLabelFontWeight = yTickLabelFontWeight,
+    
+    scheme = scheme
   )
 
   # create widget
@@ -129,7 +137,7 @@ horizontalBarChart <- function(data,
 #'
 #' @export
 horizontalBarChartOutput <- function(outputId, width = '100%', height = '400px'){
-  htmlwidgets::shinyWidgetOutput(outputId, 'horizontalBarChart', width, height, package = 'horizontalBarChart')
+  htmlwidgets::shinyWidgetOutput(outputId, 'horizontalBarChart', width, height, package = 'civis.visualizer')
 }
 
 #' @rdname horizontalBarChart-shiny

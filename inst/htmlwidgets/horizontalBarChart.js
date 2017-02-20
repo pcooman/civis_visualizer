@@ -41,7 +41,12 @@ HTMLWidgets.widget({
     var xScale = d3.scaleLinear()
         .range([x.marginLeft, width - x.marginRight])
         .domain([xMin, xMax]);
-
+        
+    if (x.scheme == "backlash") {
+      xScale
+      .range([width - x.marginRight, x.marginLeft]);
+    }
+    
     var yScale = d3.scaleBand()
         .rangeRound([height - x.marginBottom, x.marginTop])
         .domain(data.map(function (d) {
@@ -70,7 +75,8 @@ HTMLWidgets.widget({
 
   var xAxis = d3.axisTop()
     .scale(xScale) 
-    .ticks(x.xTickCount);
+    .ticks(x.xTickCount)
+    .tickFormat(d3.format(x.xTickLabelFormat));
 
   if (x.xTickLabelPosition == 'bottom') {
     xAxis = d3.axisBottom()
@@ -85,9 +91,13 @@ HTMLWidgets.widget({
     .attr("class","background_bars")
     .attr("height", yScale.bandwidth())
     .attr("y", function(d) { return yScale(d[x.yColumn]);})
-    .attr("x", xScale(xMin))
+    .attr("x", x.scheme == "backlash" ? 
+      xScale(xMax) : 
+      xScale(xMin))
     .style("fill", x.backgroundBarColor)
-    .attr("width", xScale(xMax) - xScale(xMin));
+    .attr("width", x.scheme == "backlash" ? 
+      xScale(xMin) - xScale(xMax) :
+      xScale(xMax) - xScale(xMin));
   
   svg.selectAll(".bar")
     .data(data)
@@ -100,19 +110,30 @@ HTMLWidgets.widget({
     })
     .attr("height", yScale.bandwidth())
     .attr("x", function(d) {
-      return parseFloat(d[x.xColumn]) >= 0 ? 
+      return x.scheme == "backlash" ?
+        xScale(parseFloat(d[x.xColumn])):
+       (parseFloat(d[x.xColumn]) >= 0 ? 
         xScale(0):
-        xScale(parseFloat(d[x.xColumn]));
+        xScale(parseFloat(d[x.xColumn]))) ;
     })
     .attr("width", function(d) {
-      return parseFloat(d[x.xColumn]) >= 0 ? 
+      return x.scheme == "backlash" ?
+      xScale(0)-xScale(parseFloat(d[x.xColumn])) :
+      (parseFloat(d[x.xColumn]) >= 0 ? 
         xScale(parseFloat(d[x.xColumn])) - xScale(0) :
-        xScale(0)-xScale(parseFloat(d[x.xColumn]));
+        xScale(0)-xScale(parseFloat(d[x.xColumn])));
     })
     .style("fill", function(d) {
-      return parseFloat(d[x.xColumn]) > 0 ? 
-        x.fillColorPos :
-        x.fillColorNeg;
+      var color =  parseFloat(d[x.xColumn]) > 0 ? 
+            x.fillColorPos :
+            x.fillColorNeg;
+            
+      if (x.fillDivergingColor == "blue") {
+        color = d3.interpolateBlues(parseFloat(d[x.xColumn]));
+      } else if (x.fillDivergingColor == "red") {
+        color = d3.interpolateReds(parseFloat(d[x.xColumn]));
+      }
+      return color;
     });
     
   svg.selectAll(".tooltips")
